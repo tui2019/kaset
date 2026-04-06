@@ -310,7 +310,7 @@ struct MainWindow: View {
 #if canImport(FoundationModels)
                         LyricsView(client: client)
 #else
-                        EmptyView()
+                        LyricsPanelView(client: client)
 #endif
                     } else if self.playerService.showQueue {
                         if self.playerService.queueDisplayMode == .sidepanel {
