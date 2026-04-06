@@ -1,11 +1,11 @@
 import Foundation
+#if canImport(FoundationModels)
 import FoundationModels
 
 // MARK: - MusicIntent
 
 /// Represents a user's intent when using natural language music commands.
 /// The model generates this from free-form text like "play some jazz" or "skip this song".
-@available(macOS 26.0, *)
 @Generable
 struct MusicIntent {
     /// The type of action the user wants to perform.
@@ -302,7 +302,6 @@ struct MusicIntent {
 // MARK: - MusicAction
 
 /// Actions that can be performed via natural language commands.
-@available(macOS 26.0, *)
 @Generable
 enum MusicAction: String, CaseIterable {
     case play
@@ -333,3 +332,4 @@ enum ContentSource: String, CustomStringConvertible {
         rawValue
     }
 }
+#endif

@@ -17,7 +17,7 @@
                 length="7166785"
                 type="application/octet-stream"
                 sparkle:edSignature="GTgsHbRXOdCpItytLYkZbUnaFfUEuPQzlDCodxFK0gHvE1IBlEOWuhroR7ZKscZ5AqtqpiKukOQddkijPn82Dw=="/>
-            <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
         </item>
 
     </channel>

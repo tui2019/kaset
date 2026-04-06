@@ -11,7 +11,6 @@ import SwiftUI
 ///
 /// Displays all available accounts (primary and brand accounts) and allows
 /// the user to switch between them.
-@available(macOS 26.0, *)
 struct AccountSwitcherPopover: View {
     @Environment(AccountService.self) private var accountService
     @Environment(\.dismiss) private var dismiss
@@ -111,7 +110,6 @@ extension AccessibilityID {
 
 // MARK: - Preview
 
-@available(macOS 26.0, *)
 #Preview("Account Switcher") {
     let authService = AuthService()
     let ytMusicClient = YTMusicClient(authService: authService)

@@ -3,7 +3,6 @@ import SwiftUI
 // MARK: - SearchView
 
 /// Search view for finding music.
-@available(macOS 26.0, *)
 struct SearchView: View {
     @State var viewModel: SearchViewModel
     @Environment(PlayerService.self) private var playerService

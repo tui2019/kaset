@@ -1,7 +1,6 @@
 import SwiftUI
 
 /// View displaying the user's liked songs.
-@available(macOS 26.0, *)
 struct LikedMusicView: View {
     @State var viewModel: LikedMusicViewModel
     @Environment(PlayerService.self) private var playerService

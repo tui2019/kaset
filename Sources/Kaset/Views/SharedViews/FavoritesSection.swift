@@ -5,7 +5,6 @@ import UniformTypeIdentifiers
 
 /// A horizontal scrolling section displaying pinned Favorites items.
 /// Supports drag-and-drop reordering and context menu actions.
-@available(macOS 26.0, *)
 struct FavoritesSection: View {
     @Environment(PlayerService.self) private var playerService
     @Environment(FavoritesManager.self) private var favoritesManager
@@ -213,7 +212,6 @@ struct FavoritesSection: View {
 // MARK: - FavoriteItemCard
 
 /// A card view for a single Favorites item.
-@available(macOS 26.0, *)
 private struct FavoriteItemCard: View {
     let item: FavoriteItem
     let onTap: () -> Void
@@ -329,7 +327,6 @@ private struct FavoriteItemCard: View {
 
 // MARK: - Preview
 
-@available(macOS 26.0, *)
 #Preview {
     let manager = FavoritesManager(skipLoad: true)
     // Add some sample items for preview

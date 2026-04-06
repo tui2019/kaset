@@ -1,10 +1,10 @@
+#if canImport(FoundationModels)
 import FoundationModels
 import SwiftUI
 
 // MARK: - PlaylistDetailView
 
 /// Detail view for a playlist showing its tracks.
-@available(macOS 26.0, *)
 struct PlaylistDetailView: View {
     let playlist: Playlist
     @State var viewModel: PlaylistDetailViewModel
@@ -64,7 +64,7 @@ struct PlaylistDetailView: View {
         }
         .accentBackground(from: self.viewModel.playlistDetail?.thumbnailURL?.highQualityThumbnailURL)
         .navigationTitle(self.playlist.title)
-        .toolbarBackgroundVisibility(.hidden, for: .automatic)
+        .toolbarBackgroundHidden()
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if case .error = self.viewModel.loadingState {} else {
                 PlayerBar()
@@ -581,7 +581,6 @@ struct PlaylistDetailView: View {
 
 // MARK: - RefinePlaylistSheet
 
-@available(macOS 26.0, *)
 private struct RefinePlaylistSheet: View {
     let tracks: [Song]
     @Binding var isProcessing: Bool
@@ -863,3 +862,24 @@ private struct RefinePlaylistSheet: View {
     )
     .environment(PlayerService())
 }
+#else
+import SwiftUI
+
+struct PlaylistDetailView: View {
+    let playlist: Playlist
+    @State var viewModel: PlaylistDetailViewModel
+
+    init(playlist: Playlist, viewModel: PlaylistDetailViewModel) {
+        self.playlist = playlist
+        _viewModel = State(initialValue: viewModel)
+    }
+
+    var body: some View {
+        ErrorView(
+            title: String(localized: "Playlist View Unavailable"),
+            message: String(localized: "This build requires Apple Intelligence-enabled toolchain for playlist details.")
+        ) {}
+        .navigationTitle(self.playlist.title)
+    }
+}
+#endif

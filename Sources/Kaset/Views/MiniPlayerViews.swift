@@ -69,7 +69,6 @@ struct PersistentPlayerView: NSViewRepresentable {
 
 /// A small toast-style view that appears when mini player is shown.
 /// Uses Liquid Glass materialize transition for smooth appearance.
-@available(macOS 26.0, *)
 struct MiniPlayerToast: View {
     let videoId: String
 

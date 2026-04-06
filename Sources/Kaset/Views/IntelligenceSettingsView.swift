@@ -1,9 +1,9 @@
+#if canImport(FoundationModels)
 import FoundationModels
 import SwiftUI
 
 /// Settings view for Apple Intelligence features.
 /// Allows users to enable/disable AI features and manage session state.
-@available(macOS 26.0, *)
 struct IntelligenceSettingsView: View {
     @State private var aiService = FoundationModelsService.shared
 
@@ -189,3 +189,5 @@ struct IntelligenceSettingsView: View {
         }
     }
 }
+
+#endif

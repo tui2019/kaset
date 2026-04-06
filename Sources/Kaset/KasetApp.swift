@@ -1,26 +1,55 @@
 import AppKit
 import SwiftUI
 
-extension EnvironmentValues {
-    @Entry var searchFocusTrigger: Binding<Bool> = .constant(false)
+// MARK: - Environment Keys (macOS 14 compatible; @Entry requires macOS 15+)
+
+private struct SearchFocusTriggerKey: EnvironmentKey {
+    static let defaultValue: Binding<Bool> = .constant(false)
+}
+
+private struct NavigationSelectionKey: EnvironmentKey {
+    static let defaultValue: Binding<NavigationItem?> = .constant(nil)
+}
+
+private struct ShowCommandBarKey: EnvironmentKey {
+    static let defaultValue: Binding<Bool> = .constant(false)
+}
+
+private struct ShowWhatsNewKey: EnvironmentKey {
+    static let defaultValue: Binding<Bool> = .constant(false)
 }
 
 extension EnvironmentValues {
-    @Entry var navigationSelection: Binding<NavigationItem?> = .constant(nil)
+    var searchFocusTrigger: Binding<Bool> {
+        get { self[SearchFocusTriggerKey.self] }
+        set { self[SearchFocusTriggerKey.self] = newValue }
+    }
 }
 
 extension EnvironmentValues {
-    @Entry var showCommandBar: Binding<Bool> = .constant(false)
+    var navigationSelection: Binding<NavigationItem?> {
+        get { self[NavigationSelectionKey.self] }
+        set { self[NavigationSelectionKey.self] = newValue }
+    }
 }
 
 extension EnvironmentValues {
-    @Entry var showWhatsNew: Binding<Bool> = .constant(false)
+    var showCommandBar: Binding<Bool> {
+        get { self[ShowCommandBarKey.self] }
+        set { self[ShowCommandBarKey.self] = newValue }
+    }
+}
+
+extension EnvironmentValues {
+    var showWhatsNew: Binding<Bool> {
+        get { self[ShowWhatsNewKey.self] }
+        set { self[ShowWhatsNewKey.self] = newValue }
+    }
 }
 
 // MARK: - KasetApp
 
 /// Main entry point for the Kaset macOS application.
-@available(macOS 26.0, *)
 @main
 struct KasetApp: App {
     /// App delegate for lifecycle management (background playback).
@@ -147,8 +176,10 @@ struct KasetApp: App {
                         // Fetch accounts after login check (for account switcher)
                         await self.accountService?.fetchAccounts()
 
+#if canImport(FoundationModels)
                         // Warm up Foundation Models in background
                         await FoundationModelsService.shared.warmup()
+#endif
                     }
                     .onOpenURL { url in
                         self.handleIncomingURL(url)
@@ -386,7 +417,6 @@ struct KasetApp: App {
 // MARK: - SettingsView
 
 /// Main settings view with tabbed navigation.
-@available(macOS 26.0, *)
 struct SettingsView: View {
     @Environment(UpdaterService.self) private var updaterService
     @Environment(ScrobblingCoordinator.self) private var scrobblingCoordinator
@@ -398,10 +428,12 @@ struct SettingsView: View {
                     Label("General", systemImage: "gearshape")
                 }
 
+#if canImport(FoundationModels)
             IntelligenceSettingsView()
                 .tabItem {
                     Label("Intelligence", systemImage: "sparkles")
                 }
+#endif
 
             ScrobblingSettingsView()
                 .environment(self.scrobblingCoordinator)

@@ -6,7 +6,7 @@ Thank you for your interest in contributing! This document provides guidelines a
 
 ### Requirements
 
-- macOS 26.0 or later
+- macOS 14.0 or later
 - Xcode 16.0 or later
 - Swift 6.0
 

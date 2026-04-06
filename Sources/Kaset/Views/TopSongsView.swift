@@ -1,7 +1,6 @@
 import SwiftUI
 
 /// View displaying all top songs for an artist.
-@available(macOS 26.0, *)
 struct TopSongsView: View {
     @State var viewModel: TopSongsViewModel
     @Environment(PlayerService.self) private var playerService
@@ -37,7 +36,7 @@ struct TopSongsView: View {
             }
         }
         .navigationTitle("Top songs")
-        .toolbarBackgroundVisibility(.hidden, for: .automatic)
+        .toolbarBackgroundHidden()
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if case .error = self.viewModel.loadingState {} else {
                 PlayerBar()

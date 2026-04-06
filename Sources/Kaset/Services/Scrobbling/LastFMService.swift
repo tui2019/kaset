@@ -34,11 +34,11 @@ final class LastFMService: ScrobbleServiceProtocol {
     ///   - workerBaseURL: Base URL for the Cloudflare Worker. Defaults to value from bundle or environment.
     ///   - session: URLSession to use for network requests (injectable for testing).
     init(
-        credentialStore: KeychainCredentialStore = KeychainCredentialStore(),
+        credentialStore: KeychainCredentialStore? = nil,
         workerBaseURL: URL? = nil,
         session: URLSession = .shared
     ) {
-        self.credentialStore = credentialStore
+        self.credentialStore = credentialStore ?? KeychainCredentialStore()
         self.session = session
 
         // Resolve worker URL from parameter, environment, or bundle

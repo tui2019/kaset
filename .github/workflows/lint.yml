@@ -23,7 +23,7 @@ on:
 jobs:
   swiftlint:
     name: SwiftLint
-    runs-on: macos-26
+    runs-on: macos-latest
     timeout-minutes: 10
 
     steps:
@@ -39,7 +39,7 @@ jobs:
 
   swiftformat:
     name: SwiftFormat
-    runs-on: macos-26
+    runs-on: macos-latest
     timeout-minutes: 10
 
     steps:

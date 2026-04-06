@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import FoundationModels
 import SwiftUI
 
@@ -5,7 +6,6 @@ import SwiftUI
 
 /// A floating command bar for natural language music control.
 /// Accessible via Cmd+K, allows users to control playback with voice-like commands.
-@available(macOS 26.0, *)
 struct CommandBarView: View {
     @Environment(PlayerService.self) private var playerService
 
@@ -870,7 +870,6 @@ struct CommandBarView: View {
 
 // MARK: - SuggestionChip
 
-@available(macOS 26.0, *)
 private struct SuggestionChip: View {
     let text: String
     let action: () -> Void
@@ -888,6 +887,9 @@ private struct SuggestionChip: View {
     }
 }
 
+#endif
+
+#if canImport(FoundationModels)
 #Preview {
     @Previewable @State var isPresented = true
     let authService = AuthService()
@@ -897,3 +899,4 @@ private struct SuggestionChip: View {
         .padding(40)
         .frame(width: 600, height: 300)
 }
+#endif

@@ -1,8 +1,8 @@
+#if canImport(FoundationModels)
 import FoundationModels
 import SwiftUI
 
 /// Right sidebar panel displaying lyrics for the current track.
-@available(macOS 26.0, *)
 struct LyricsView: View {
     @Environment(PlayerService.self) private var playerService
     @Environment(SyncedLyricsService.self) private var syncedLyricsService
@@ -512,6 +512,9 @@ struct LyricsView: View {
     }
 }
 
+#endif
+
+#if canImport(FoundationModels)
 #Preview {
     let authService = AuthService()
     let client = YTMusicClient(authService: authService, webKitManager: .shared)
@@ -519,3 +522,4 @@ struct LyricsView: View {
         .environment(PlayerService())
         .frame(height: 600)
 }
+#endif

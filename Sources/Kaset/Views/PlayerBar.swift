@@ -3,7 +3,6 @@ import SwiftUI
 // MARK: - PlayerBar
 
 /// Player bar shown at the bottom of the content area, styled like Apple Music with Liquid Glass.
-@available(macOS 26.0, *)
 struct PlayerBar: View {
     private static let brandAccent = PackageResourceLookup.brandAccent
 
@@ -543,7 +542,6 @@ struct PlayerBar: View {
     }
 }
 
-@available(macOS 26.0, *)
 #Preview {
     PlayerBar()
         .environment(PlayerService())

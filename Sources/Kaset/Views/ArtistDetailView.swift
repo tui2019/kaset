@@ -1,7 +1,6 @@
 import SwiftUI
 
 /// Detail view for an artist showing their songs and albums.
-@available(macOS 26.0, *)
 struct ArtistDetailView: View {
     let artist: Artist
     @State var viewModel: ArtistDetailViewModel
@@ -30,7 +29,7 @@ struct ArtistDetailView: View {
         }
         .accentBackground(from: self.viewModel.artistDetail?.thumbnailURL?.highQualityThumbnailURL)
         .navigationTitle(self.artist.name)
-        .toolbarBackgroundVisibility(.hidden, for: .automatic)
+        .toolbarBackgroundHidden()
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if case .error = self.viewModel.loadingState {} else {
                 PlayerBar()

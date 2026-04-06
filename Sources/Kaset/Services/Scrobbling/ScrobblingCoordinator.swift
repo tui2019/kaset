@@ -76,12 +76,12 @@ final class ScrobblingCoordinator {
         playerService: PlayerService,
         settingsManager: SettingsManager = .shared,
         services: [any ScrobbleServiceProtocol],
-        queue: ScrobbleQueue = ScrobbleQueue()
+        queue: ScrobbleQueue? = nil
     ) {
         self.playerService = playerService
         self.settingsManager = settingsManager
         self.services = services
-        self.queue = queue
+        self.queue = queue ?? ScrobbleQueue()
     }
 
     deinit {

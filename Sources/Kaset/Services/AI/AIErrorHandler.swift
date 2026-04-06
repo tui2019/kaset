@@ -1,4 +1,5 @@
 import Foundation
+#if canImport(FoundationModels)
 import FoundationModels
 
 // MARK: - AIError
@@ -7,7 +8,6 @@ import FoundationModels
 ///
 /// These errors provide actionable messages that can be displayed directly to users,
 /// along with suggestions for recovery.
-@available(macOS 26.0, *)
 enum AIError: LocalizedError {
     /// The request was too complex or exceeded token limits.
     case contextWindowExceeded
@@ -95,7 +95,6 @@ enum AIError: LocalizedError {
 ///     }
 /// }
 /// ```
-@available(macOS 26.0, *)
 enum AIErrorHandler {
     private static let logger = DiagnosticsLogger.ai
 
@@ -194,3 +193,4 @@ enum AIErrorHandler {
         return self.userMessage(for: aiError)
     }
 }
+#endif

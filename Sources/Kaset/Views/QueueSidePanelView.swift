@@ -2,7 +2,6 @@ import SwiftUI
 
 // MARK: - QueueSidePanelView
 
-@available(macOS 26.0, *)
 struct QueueSidePanelView: View {
     @Environment(PlayerService.self) private var playerService
     @Environment(FavoritesManager.self) private var favoritesManager
@@ -80,7 +79,6 @@ struct QueueSidePanelView: View {
 
 // MARK: - QueueListControllerRepresentable
 
-@available(macOS 26.0, *)
 struct QueueListControllerRepresentable: NSViewControllerRepresentable {
     let queue: [Song]
     let currentIndex: Int
@@ -389,7 +387,6 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
 
 // MARK: - DraggableTableView
 
-@available(macOS 26.0, *)
 class DraggableTableView: NSTableView {
     weak var coordinator: QueueListControllerRepresentable.Coordinator?
 
@@ -575,7 +572,6 @@ class DraggableTableView: NSTableView {
 
 // MARK: - QueueSidePanelHeader
 
-@available(macOS 26.0, *)
 private struct QueueSidePanelHeader: View {
     @Environment(PlayerService.self) private var playerService
 
@@ -609,7 +605,6 @@ private struct QueueSidePanelHeader: View {
 
 // MARK: - QueueFooterActions
 
-@available(macOS 26.0, *)
 private struct QueueFooterActions: View {
     @Environment(PlayerService.self) private var playerService
 
@@ -662,7 +657,6 @@ private struct QueueFooterActions: View {
 
 // MARK: - Preview
 
-@available(macOS 26.0, *)
 #Preview("Queue Side Panel") {
     let playerService = PlayerService()
     QueueSidePanelView()

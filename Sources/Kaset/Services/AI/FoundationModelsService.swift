@@ -1,4 +1,5 @@
 import Foundation
+#if canImport(FoundationModels)
 import FoundationModels
 import Observation
 import os
@@ -37,7 +38,6 @@ import os
 ///
 /// Call `warmup()` at app launch to pre-initialize the model. This uses the official
 /// `prewarm()` API to load model resources without sending dummy prompts.
-@available(macOS 26.0, *)
 @MainActor
 @Observable
 final class FoundationModelsService {
@@ -198,3 +198,4 @@ final class FoundationModelsService {
         self.logger.debug("Foundation Models prewarm completed successfully")
     }
 }
+#endif

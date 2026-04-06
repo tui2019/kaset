@@ -3,7 +3,6 @@ import SwiftUI
 // MARK: - MainWindow
 
 /// Main application window with sidebar navigation and player bar.
-@available(macOS 26.0, *)
 struct MainWindow: View {
     private struct PresentedWhatsNew: Identifiable {
         let whatsNew: WhatsNew
@@ -149,8 +148,12 @@ struct MainWindow: View {
                         }
 
                     VStack(spacing: 0) {
+#if canImport(FoundationModels)
                         CommandBarView(client: self.client, isPresented: self.$isCommandBarPresented)
                             .transition(.opacity.combined(with: .scale(scale: 0.95)))
+#else
+                        EmptyView()
+#endif
 
                         Spacer(minLength: 0)
                     }
@@ -275,6 +278,7 @@ struct MainWindow: View {
         .animation(.easeInOut(duration: 0.25), value: self.playerService.showQueue)
         .frame(minWidth: 900, minHeight: 600)
         .toolbar {
+#if canImport(FoundationModels)
             ToolbarItem(placement: .primaryAction) {
                 Button {
                     self.isCommandBarPresented = true
@@ -288,6 +292,7 @@ struct MainWindow: View {
                 .accessibilityIdentifier(AccessibilityID.MainWindow.aiButton)
                 .requiresIntelligence()
             }
+#endif
         }
     }
 
@@ -302,7 +307,11 @@ struct MainWindow: View {
 
                 Group {
                     if self.playerService.showLyrics {
+#if canImport(FoundationModels)
                         LyricsView(client: client)
+#else
+                        EmptyView()
+#endif
                     } else if self.playerService.showQueue {
                         if self.playerService.queueDisplayMode == .sidepanel {
                             QueueSidePanelView()
@@ -520,7 +529,6 @@ enum NavigationItem: String, Hashable, CaseIterable, Identifiable {
     }
 }
 
-@available(macOS 26.0, *)
 #Preview {
     @Previewable @State var navSelection: NavigationItem? = .home
     let authService = AuthService()
