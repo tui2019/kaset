@@ -1,6 +1,7 @@
+import SwiftUI
 #if canImport(FoundationModels)
 import FoundationModels
-import SwiftUI
+#endif
 
 // MARK: - PlaylistDetailView
 
@@ -16,6 +17,7 @@ struct PlaylistDetailView: View {
     /// Tracks whether this playlist has been added to library in this session.
     @State private var isAddedToLibrary: Bool = false
 
+#if canImport(FoundationModels)
     /// Whether the refine playlist sheet is visible.
     @State private var showRefineSheet: Bool = false
 
@@ -30,6 +32,7 @@ struct PlaylistDetailView: View {
 
     /// Error message from refine operation.
     @State private var refineError: String?
+#endif
 
     /// Computed property to check if playlist is in library.
     private var isInLibrary: Bool {
@@ -78,6 +81,7 @@ struct PlaylistDetailView: View {
         .refreshable {
             await self.viewModel.refresh()
         }
+#if canImport(FoundationModels)
         .sheet(isPresented: self.$showRefineSheet) {
             if let detail = viewModel.playlistDetail {
                 RefinePlaylistSheet(
@@ -97,6 +101,7 @@ struct PlaylistDetailView: View {
                 )
             }
         }
+#endif
     }
 
     // MARK: - Views
@@ -240,6 +245,7 @@ struct PlaylistDetailView: View {
                 .controlSize(.large)
 
                 // Refine Playlist button (AI-powered)
+#if canImport(FoundationModels)
                 if !detail.isAlbum {
                     Button {
                         self.showRefineSheet = true
@@ -250,6 +256,7 @@ struct PlaylistDetailView: View {
                     .controlSize(.large)
                     .requiresIntelligence()
                 }
+#endif
             }
 
             Text(self.metadataText(for: detail))
@@ -503,6 +510,7 @@ struct PlaylistDetailView: View {
         }
     }
 
+    #if canImport(FoundationModels)
     private func refinePlaylist(tracks: [Song], prompt: String) async {
         self.isRefining = true
         self.refineError = nil
@@ -577,10 +585,12 @@ struct PlaylistDetailView: View {
         self.partialChanges = nil
         self.isRefining = false
     }
+    #endif
 }
 
 // MARK: - RefinePlaylistSheet
 
+#if canImport(FoundationModels)
 private struct RefinePlaylistSheet: View {
     let tracks: [Song]
     @Binding var isProcessing: Bool
@@ -841,6 +851,7 @@ private struct RefinePlaylistSheet: View {
         .buttonStyle(.plain)
     }
 }
+#endif
 
 #Preview {
     let playlist = Playlist(
@@ -862,24 +873,3 @@ private struct RefinePlaylistSheet: View {
     )
     .environment(PlayerService())
 }
-#else
-import SwiftUI
-
-struct PlaylistDetailView: View {
-    let playlist: Playlist
-    @State var viewModel: PlaylistDetailViewModel
-
-    init(playlist: Playlist, viewModel: PlaylistDetailViewModel) {
-        self.playlist = playlist
-        _viewModel = State(initialValue: viewModel)
-    }
-
-    var body: some View {
-        ErrorView(
-            title: String(localized: "Playlist View Unavailable"),
-            message: String(localized: "This build requires Apple Intelligence-enabled toolchain for playlist details.")
-        ) {}
-        .navigationTitle(self.playlist.title)
-    }
-}
-#endif
