@@ -77,9 +77,10 @@ final class ExtensionsManager {
             .appendingPathComponent("ManagedExtensions", isDirectory: true)
     }
 
-    init(persistenceURL: URL? = ExtensionsManager.defaultPersistenceURL) {
-        self.persistenceURL = persistenceURL
-        self.extensions = Self.load(from: persistenceURL)
+    init(persistenceURL: URL? = nil) {
+        let resolvedPersistenceURL = persistenceURL ?? Self.defaultPersistenceURL
+        self.persistenceURL = resolvedPersistenceURL
+        self.extensions = Self.load(from: resolvedPersistenceURL)
     }
 
     // MARK: - Persistence

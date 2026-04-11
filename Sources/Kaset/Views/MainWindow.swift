@@ -356,12 +356,17 @@ struct MainWindow: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
+    @ViewBuilder
     private var commandBar: some View {
+#if canImport(FoundationModels)
         CommandBarView(
             client: self.client,
             isPresented: self.$isCommandBarPresented,
             searchViewModel: self.searchViewModel
         )
+#else
+        EmptyView()
+#endif
     }
 
     /// Returns the view for a specific navigation item.
