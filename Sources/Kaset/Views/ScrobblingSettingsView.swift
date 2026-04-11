@@ -15,7 +15,7 @@ struct ScrobblingSettingsView: View {
         }
         .formStyle(.grouped)
         .frame(minWidth: 400, minHeight: 300)
-        .navigationTitle("Scrobbling")
+        .localizedNavigationTitle("Scrobbling")
     }
 }
 

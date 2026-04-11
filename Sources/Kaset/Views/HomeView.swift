@@ -33,7 +33,7 @@ struct HomeView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationTitle("Home")
+            .localizedNavigationTitle("Home")
             .navigationDestinations(client: self.viewModel.client)
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {

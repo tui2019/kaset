@@ -163,6 +163,7 @@ struct KasetApp: App {
                     .environment(\.showCommandBar, self.$showCommandBar)
                     .environment(\.showWhatsNew, self.$showWhatsNew)
                     .onAppear {
+                        DiagnosticsLogger.app.info("KasetApp: App content appeared")
                         // Wire up PlayerService to AppDelegate for dock menu and AppleScript actions
                         // This runs synchronously so AppleScript commands can access playerService immediately
                         self.appDelegate.playerService = self.playerService
@@ -170,8 +171,10 @@ struct KasetApp: App {
                         _ = self.notificationService
                     }
                     .task {
+                        DiagnosticsLogger.app.info("KasetApp: Root task started")
                         // Check if user is already logged in from previous session
                         await self.authService.checkLoginStatus()
+                        DiagnosticsLogger.app.info("KasetApp: Login status check complete")
 
                         // Fetch accounts after login check (for account switcher)
                         await self.accountService?.fetchAccounts()
@@ -440,7 +443,12 @@ struct SettingsView: View {
                 .tabItem {
                     Label("Scrobbling", systemImage: "music.note.list")
                 }
+
+            ExtensionsSettingsView()
+                .tabItem {
+                    Label("Extensions", systemImage: "puzzlepiece.extension")
+                }
         }
-        .frame(width: 450, height: 400)
+        .frame(width: 460, height: 420)
     }
 }

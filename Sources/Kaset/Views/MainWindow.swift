@@ -22,6 +22,7 @@ struct MainWindow: View {
     @Environment(WebKitManager.self) private var webKitManager
     @Environment(AccountService.self) private var accountService
     @Environment(SongLikeStatusManager.self) private var likeStatusManager
+    @Environment(\.searchFocusTrigger) private var searchFocusTrigger
     @Environment(\.showCommandBar) private var showCommandBar
     @Environment(\.showWhatsNew) private var showWhatsNew
 
@@ -84,6 +85,14 @@ struct MainWindow: View {
                 } else {
                     OnboardingView()
                 }
+            }
+            .onAppear {
+                DiagnosticsLogger.app.info("MainWindow: UI appeared")
+            }
+            .task {
+                DiagnosticsLogger.app.info("MainWindow: Starting login check check...")
+                await self.authService.checkLoginStatus()
+                DiagnosticsLogger.app.info("MainWindow: Login check complete")
             }
 
             // Persistent WebView - always present once a video has been requested
@@ -151,7 +160,7 @@ struct MainWindow: View {
 
                     VStack(spacing: 0) {
 #if canImport(FoundationModels)
-                        CommandBarView(client: self.client, isPresented: self.$isCommandBarPresented)
+                        self.commandBar
                             .transition(.opacity.combined(with: .scale(scale: 0.95)))
 #else
                         EmptyView()
@@ -269,7 +278,7 @@ struct MainWindow: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
-                // Ensure sidebar is visible when window becomes key (e.g., restored from dock)
+                // Ensure the sidebar returns when the app is re-activated from the Dock or app switcher.
                 if self.columnVisibility != .all {
                     self.columnVisibility = .all
                 }
@@ -347,6 +356,14 @@ struct MainWindow: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
+    private var commandBar: some View {
+        CommandBarView(
+            client: self.client,
+            isPresented: self.$isCommandBarPresented,
+            searchViewModel: self.searchViewModel
+        )
+    }
+
     /// Returns the view for a specific navigation item.
     private func viewForNavigationItem(_ item: NavigationItem) -> some View { // swiftlint:disable:this cyclomatic_complexity
         Group {
@@ -356,7 +373,9 @@ struct MainWindow: View {
             case .explore:
                 if let vm = exploreViewModel { ExploreView(viewModel: vm) }
             case .search:
-                if let vm = searchViewModel { SearchView(viewModel: vm) }
+                if let vm = searchViewModel {
+                    SearchView(viewModel: vm, focusTrigger: self.searchFocusTrigger)
+                }
             case .charts:
                 if let vm = chartsViewModel { ChartsView(viewModel: vm) }
             case .moodsAndGenres:

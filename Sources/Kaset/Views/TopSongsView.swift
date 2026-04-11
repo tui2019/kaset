@@ -35,7 +35,7 @@ struct TopSongsView: View {
                 }
             }
         }
-        .navigationTitle("Top songs")
+        .localizedNavigationTitle("Top songs")
         .toolbarBackgroundHidden()
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if case .error = self.viewModel.loadingState {} else {

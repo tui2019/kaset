@@ -34,7 +34,7 @@ struct PodcastsView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationTitle("Podcasts")
+            .localizedNavigationTitle("Podcasts")
             .navigationDestination(for: PodcastShow.self) { show in
                 PodcastShowView(show: show, client: self.viewModel.client)
             }
@@ -610,7 +610,7 @@ struct AllEpisodesView: View {
             .padding(24)
         }
         .accentBackground(from: self.show.thumbnailURL)
-        .navigationTitle("All Episodes")
+        .localizedNavigationTitle("All Episodes")
         .safeAreaInset(edge: .bottom, spacing: 0) {
             PlayerBar()
         }

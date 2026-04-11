@@ -32,9 +32,7 @@ struct QueueSidePanelView: View {
                         self.playerService.reorderQueue(from: IndexSet(integer: source), to: destination)
                     },
                     onRemove: { videoId in
-                        Task {
-                            await self.playerService.removeFromQueue(videoIds: Set([videoId]))
-                        }
+                        self.playerService.removeFromQueue(videoIds: Set([videoId]))
                     },
                     onStartRadio: { song in
                         Task {
@@ -135,6 +133,7 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
 
     // MARK: - View Controller
 
+    @MainActor
     class QueueListViewController: NSViewController {
         var tableView: DraggableTableView?
         weak var coordinator: Coordinator?
@@ -188,6 +187,7 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
 
     // MARK: - Coordinator
 
+    @MainActor
     class Coordinator: NSObject, NSTableViewDelegate, NSTableViewDataSource {
         var queue: [Song]
         var currentIndex: Int
@@ -235,10 +235,12 @@ struct QueueListControllerRepresentable: NSViewControllerRepresentable {
                 rowView.animator().alphaValue = 0
                 rowView.animator().frame.origin.x += offsetX
             } completionHandler: { [weak self] in
-                // Reset row view so it can be reused without a stuck frame/alpha (fixes misaligned rows).
-                rowView.alphaValue = 1
-                rowView.frame = originalFrame
-                self?.onRemove(videoId)
+                MainActor.assumeIsolated {
+                    // Reset row view so it can be reused without a stuck frame/alpha (fixes misaligned rows).
+                    rowView.alphaValue = 1
+                    rowView.frame = originalFrame
+                    self?.onRemove(videoId)
+                }
             }
         }
 
@@ -409,17 +411,23 @@ class DraggableTableView: NSTableView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.setupTable()
+        MainActor.assumeIsolated {
+            self.setupTable()
+        }
     }
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        self.setupTable()
+        MainActor.assumeIsolated {
+            self.setupTable()
+        }
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        self.setupTable()
+        MainActor.assumeIsolated {
+            self.setupTable()
+        }
     }
 
     private func setupTable() {
@@ -533,11 +541,13 @@ class DraggableTableView: NSTableView {
                     rowView.animator().frame = f
                     rowView.animator().alphaValue = 0
                 } completionHandler: {
-                    rowView.alphaValue = 1
-                    var f = rowView.frame
-                    f.origin.x = initialX
-                    rowView.frame = f
-                    coord.onRemove(videoId)
+                    MainActor.assumeIsolated {
+                        rowView.alphaValue = 1
+                        var f = rowView.frame
+                        f.origin.x = initialX
+                        rowView.frame = f
+                        coord.onRemove(videoId)
+                    }
                 }
                 return true
             } else {

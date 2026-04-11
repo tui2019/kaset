@@ -34,7 +34,7 @@ struct LikedMusicView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationTitle("Liked Music")
+            .localizedNavigationTitle("Liked Music")
             .navigationDestination(for: Artist.self) { artist in
                 ArtistDetailView(
                     artist: artist,
