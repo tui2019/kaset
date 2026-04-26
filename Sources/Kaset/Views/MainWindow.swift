@@ -301,9 +301,8 @@ struct MainWindow: View {
                         .foregroundStyle(.primary)
                 }
                 .keyboardShortcut("k", modifiers: .command)
-                .help(String(localized: "Ask AI (⌘K)"))
+                .help(String(localized: "Open Command Bar (⌘K)"))
                 .accessibilityIdentifier(AccessibilityID.MainWindow.aiButton)
-                .requiresIntelligence()
             }
 #endif
         }
@@ -361,7 +360,10 @@ struct MainWindow: View {
 #if canImport(FoundationModels)
         CommandBarView(
             client: self.client,
+            playerService: self.playerService,
             isPresented: self.$isCommandBarPresented,
+            navigationSelection: self.$navigationSelection,
+            searchFocusTrigger: self.searchFocusTrigger,
             searchViewModel: self.searchViewModel
         )
 #else

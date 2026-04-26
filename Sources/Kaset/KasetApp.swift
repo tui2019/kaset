@@ -66,6 +66,7 @@ struct KasetApp: App {
     @State private var accountService: AccountService?
     @State private var scrobblingCoordinator: ScrobblingCoordinator
     @State private var syncedLyricsService: SyncedLyricsService
+    @State private var equalizerService = EqualizerService.shared
     @State private var settings = SettingsManager.shared
 
     /// Triggers search field focus when set to true.
@@ -158,6 +159,7 @@ struct KasetApp: App {
                     .environment(self.accountService)
                     .environment(self.scrobblingCoordinator)
                     .environment(self.syncedLyricsService)
+                    .environment(self.equalizerService)
                     .environment(\.searchFocusTrigger, self.$searchFocusTrigger)
                     .environment(\.navigationSelection, self.$navigationSelection)
                     .environment(\.showCommandBar, self.$showCommandBar)
@@ -187,6 +189,15 @@ struct KasetApp: App {
                     .onOpenURL { url in
                         self.handleIncomingURL(url)
                     }
+                    .onChange(of: self.playerService.isPlaying) { _, isPlaying in
+                        // The Core Audio process tap needs WebKit's GPU
+                        // process to be actively emitting audio before it
+                        // can be discovered. When playback starts, give the
+                        // equalizer a chance to spin up.
+                        if isPlaying {
+                            self.equalizerService.retryStartIfEnabled()
+                        }
+                    }
             }
         }
 
@@ -196,6 +207,7 @@ struct KasetApp: App {
                 .environment(self.authService)
                 .environment(self.updaterService)
                 .environment(self.scrobblingCoordinator)
+                .environment(self.equalizerService)
         }
         .commands {
             // Check for Updates command in app menu
@@ -226,6 +238,7 @@ struct KasetApp: App {
                     }
                 }
                 .keyboardShortcut(.rightArrow, modifiers: .command)
+                .disabled(self.playerService.currentEpisode != nil)
 
                 // Previous Track - ⌘←
                 Button("Previous") {
@@ -234,6 +247,7 @@ struct KasetApp: App {
                     }
                 }
                 .keyboardShortcut(.leftArrow, modifiers: .command)
+                .disabled(self.playerService.currentEpisode != nil)
 
                 Divider()
 
@@ -444,6 +458,11 @@ struct SettingsView: View {
                     Label("Scrobbling", systemImage: "music.note.list")
                 }
 
+            EqualizerSettingsView()
+                .tabItem {
+                    Label("Equalizer", systemImage: "slider.vertical.3")
+                }
+
             if #available(macOS 26.0, *) {
                 ExtensionsSettingsView()
                     .tabItem {
@@ -451,6 +470,8 @@ struct SettingsView: View {
                     }
             }
         }
-        .frame(width: 460, height: 420)
+        // 520×520 fits the Equalizer tab's six-band slider grid + curve
+        // preview; the other tabs grow comfortably into the extra space.
+        .frame(width: 520, height: 520)
     }
 }
