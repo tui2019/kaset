@@ -50,7 +50,7 @@ jobs:
             ${{ runner.os }}-spm-build-
 
       - name: Clear SPM binary artifacts cache
-        run: rm -rf ~/Library/Caches/org.swift.swiftpm/artifacts
+        run: rm -rf ~/Library/Caches/org.swift.swiftpm/artifacts .build/artifacts
 
       - name: Get short SHA
         id: slug

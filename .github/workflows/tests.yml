@@ -49,7 +49,7 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: Clear SPM binary artifacts cache
-        run: rm -rf ~/Library/Caches/org.swift.swiftpm/artifacts
+        run: rm -rf ~/Library/Caches/org.swift.swiftpm/artifacts .build/artifacts
 
       - name: Run unit tests
         run: swift test -q --skip KasetUITests
@@ -79,7 +79,7 @@ jobs:
             ${{ runner.os }}-spm-ui-
 
       - name: Clear SPM binary artifacts cache
-        run: rm -rf ~/Library/Caches/org.swift.swiftpm/artifacts
+        run: rm -rf ~/Library/Caches/org.swift.swiftpm/artifacts .build/artifacts
 
       - name: Build app bundle for UI tests
         env:
