@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 import Testing
 @testable import Kaset
@@ -447,3 +448,5 @@ struct ContentSourceTests {
         #expect(ContentSource.charts.description == "charts")
     }
 }
+
+#endif

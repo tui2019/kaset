@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 import Testing
 @testable import Kaset
@@ -159,3 +160,5 @@ struct QueueToolTests {
         #expect(result.contains("Queue is empty"))
     }
 }
+
+#endif

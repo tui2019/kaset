@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 import Testing
 @testable import Kaset
@@ -211,3 +212,5 @@ struct FoundationModelsBudgetTests {
         #expect(bestFit?.isEmpty == true)
     }
 }
+
+#endif

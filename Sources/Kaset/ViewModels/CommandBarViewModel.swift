@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 import Observation
 
@@ -490,3 +491,5 @@ final class CommandBarViewModel {
         self.phase = .idle
     }
 }
+
+#endif

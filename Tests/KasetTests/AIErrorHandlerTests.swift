@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 import Testing
 @testable import Kaset
@@ -227,3 +228,5 @@ struct AIErrorHandlerTests {
         #expect(message?.contains("Test error") == true)
     }
 }
+
+#endif

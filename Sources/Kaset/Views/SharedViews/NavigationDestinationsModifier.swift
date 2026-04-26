@@ -75,21 +75,25 @@ struct NavigationDestinationsModifier: ViewModifier {
                     .environment(libraryViewModel)
             }
             .navigationDestination(for: ArtistSeeAllDestination.self) { destination in
-                switch destination.endpoint.pageType {
-                case .discography:
-                    ArtistDiscographyView(viewModel: ArtistDiscographyViewModel(
-                        destination: destination,
-                        client: self.client
-                    ))
-                case .artist:
-                    ArtistEpisodesListView(viewModel: ArtistEpisodesListViewModel(
-                        destination: destination,
-                        client: self.client
-                    ))
-                case .playlist:
-                    // Playlist destinations route through the `Playlist` value
-                    // instead of `ArtistSeeAllDestination`, so this branch is
-                    // structurally unreachable. Fall back gracefully.
+                if #available(macOS 26.0, *) {
+                    switch destination.endpoint.pageType {
+                    case .discography:
+                        ArtistDiscographyView(viewModel: ArtistDiscographyViewModel(
+                            destination: destination,
+                            client: self.client
+                        ))
+                    case .artist:
+                        ArtistEpisodesListView(viewModel: ArtistEpisodesListViewModel(
+                            destination: destination,
+                            client: self.client
+                        ))
+                    case .playlist:
+                        // Playlist destinations route through the `Playlist` value
+                        // instead of `ArtistSeeAllDestination`, so this branch is
+                        // structurally unreachable. Fall back gracefully.
+                        EmptyView()
+                    }
+                } else {
                     EmptyView()
                 }
             }

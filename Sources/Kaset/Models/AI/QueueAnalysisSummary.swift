@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 import FoundationModels
 
@@ -53,3 +54,5 @@ extension QueueAnalysisSummary.PartiallyGenerated {
         return parts.joined(separator: " ")
     }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 import FoundationModels
 import Testing
@@ -339,3 +340,5 @@ struct MusicIntentIntegrationTests {
         }
     }
 }
+
+#endif

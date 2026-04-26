@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 import Testing
 @testable import Kaset
@@ -509,3 +510,5 @@ struct CommandBarViewModelTests {
         #expect(viewModel.resultMessage == "Queue cleared")
     }
 }
+
+#endif

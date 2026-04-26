@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 import Testing
 @testable import Kaset
@@ -40,3 +41,5 @@ struct CommandExecutorTests {
         #expect(outcome.searchQueryToOpen == nil)
     }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Testing
 @testable import Kaset
 
@@ -153,3 +154,5 @@ struct FoundationModelsPromptLibraryTests {
         #expect(prompt.contains("Return no removals or reordering"))
     }
 }
+
+#endif

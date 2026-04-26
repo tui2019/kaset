@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 
 @available(macOS 26.0, *)
@@ -364,3 +365,5 @@ struct CommandIntentParser {
         "up next",
     ]
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 import FoundationModels
 import Testing
@@ -237,3 +238,5 @@ struct FoundationModelsOptimizedPromptIntegrationTests {
         }
     }
 }
+
+#endif

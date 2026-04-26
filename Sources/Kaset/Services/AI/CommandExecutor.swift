@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 
 @available(macOS 26.0, *)
@@ -459,3 +460,5 @@ struct CommandExecutor {
         return terms.contains { titleLower.contains($0) }
     }
 }
+
+#endif

@@ -458,10 +458,12 @@ struct SettingsView: View {
                     Label("Scrobbling", systemImage: "music.note.list")
                 }
 
-            EqualizerSettingsView()
-                .tabItem {
-                    Label("Equalizer", systemImage: "slider.vertical.3")
-                }
+            if #available(macOS 26.0, *) {
+                EqualizerSettingsView()
+                    .tabItem {
+                        Label("Equalizer", systemImage: "slider.vertical.3")
+                    }
+            }
 
             if #available(macOS 26.0, *) {
                 ExtensionsSettingsView()

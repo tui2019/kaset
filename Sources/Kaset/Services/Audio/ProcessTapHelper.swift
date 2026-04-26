@@ -199,7 +199,9 @@ final class ProcessTapHelper {
             self.aggregateDeviceID = AudioObjectID(kAudioObjectUnknown)
         }
         if self.tapID != kAudioObjectUnknown {
-            AudioHardwareDestroyProcessTap(self.tapID)
+            if #available(macOS 14.2, *) {
+                AudioHardwareDestroyProcessTap(self.tapID)
+            }
             self.tapID = AudioObjectID(kAudioObjectUnknown)
         }
         self.aggregateUID = nil
@@ -211,7 +213,9 @@ final class ProcessTapHelper {
             AudioHardwareDestroyAggregateDevice(self.aggregateDeviceID)
         }
         if self.tapID != kAudioObjectUnknown {
-            AudioHardwareDestroyProcessTap(self.tapID)
+            if #available(macOS 14.2, *) {
+                AudioHardwareDestroyProcessTap(self.tapID)
+            }
         }
     }
 

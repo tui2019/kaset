@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 import Testing
 @testable import Kaset
@@ -125,3 +126,5 @@ struct FoundationModelsServiceTests {
         service.refreshAvailability()
     }
 }
+
+#endif

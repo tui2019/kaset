@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Testing
 @testable import Kaset
 
@@ -55,3 +56,5 @@ struct CommandIntentParserTests {
         #expect(!self.parser.isQueueInspectionQuery("next track"))
     }
 }
+
+#endif

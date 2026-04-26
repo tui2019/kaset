@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 import FoundationModels
 
@@ -140,3 +141,5 @@ enum CommandBarAction: String, CaseIterable {
     case pause
     case resume
 }
+
+#endif

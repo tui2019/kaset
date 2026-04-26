@@ -1,3 +1,4 @@
+#if canImport(FoundationModels)
 import Foundation
 
 @available(macOS 26.0, *)
@@ -212,3 +213,5 @@ enum ContentSourceResolver {
         }
     }
 }
+
+#endif
