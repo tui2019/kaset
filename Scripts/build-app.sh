@@ -32,6 +32,13 @@ fi
 
 echo "🔨 Building $APP_NAME ($CONF) for ${ARCH_LIST[*]}..."
 
+# Reset stale SwiftPM binary-artifact state (common with cached CI workspaces).
+if [[ -f ".build/workspace-state.json" ]] && [[ ! -f ".build/artifacts/sparkle/Sparkle/Sparkle.xcframework/Info.plist" ]]; then
+  echo "🧹 Resetting stale SwiftPM artifact state..."
+  rm -rf ".build/artifacts/sparkle"
+  rm -f ".build/workspace-state.json"
+fi
+
 # Clean previous build
 rm -rf "$BUILD_DIR"
 mkdir -p "$BUILD_DIR"

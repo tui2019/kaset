@@ -52,7 +52,9 @@ jobs:
             ${{ runner.os }}-spm-release-
 
       - name: Clear SPM binary artifacts cache
-        run: rm -rf ~/Library/Caches/org.swift.swiftpm/artifacts .build/artifacts
+        run: |
+          rm -rf ~/Library/Caches/org.swift.swiftpm/artifacts .build/artifacts
+          rm -f .build/workspace-state.json
 
       - name: Run unit tests
         run: swift test -q --skip KasetUITests
