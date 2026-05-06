@@ -31,6 +31,7 @@ struct SearchView: View {
             VStack(spacing: 0) {
                 // Search bar
                 self.searchBar
+                    .zIndex(1)
 
                 Divider()
 
@@ -58,19 +59,21 @@ struct SearchView: View {
 
     private var searchBar: some View {
         VStack(spacing: 12) {
-            ZStack(alignment: .top) {
-                // Search field
-                self.searchField
-
-                // Suggestions dropdown
-                if self.viewModel.showSuggestions {
-                    self.suggestionsDropdown
-                        .padding(.top, 44) // Below search field
+            // Keep suggestions as an overlay of the field itself. If the dropdown participates
+            // in the search bar's layout, macOS 26 glass materialization can render a
+            // second transient plate during updates. Anchoring it as an overlay gives the
+            // autocomplete menu a single visual owner and prevents duplicate dropdowns.
+            self.searchField
+                .overlay(alignment: .top) {
+                    if self.viewModel.showSuggestions {
+                        self.suggestionsDropdown
+                            .padding(.top, 44) // Below search field
+                    }
                 }
-            }
+                .zIndex(1)
 
             // Filter chips
-            if !self.viewModel.results.isEmpty {
+            if self.viewModel.shouldShowFilters {
                 self.filterChips
             }
         }
@@ -127,6 +130,7 @@ struct SearchView: View {
                     }
                     return .ignored
                 }
+                .accessibilityIdentifier(AccessibilityID.Search.searchField)
 
             if !self.viewModel.query.isEmpty {
                 Button {
@@ -137,6 +141,7 @@ struct SearchView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(String(localized: "Clear search"))
+                .accessibilityIdentifier(AccessibilityID.Search.clearButton)
             }
         }
         .padding(10)
@@ -154,8 +159,8 @@ struct SearchView: View {
             }
         }
         .glassEffect(.regular, in: .rect(cornerRadius: 8))
-        .glassEffectTransition(.materialize)
         .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
+        .accessibilityIdentifier(AccessibilityID.Search.suggestionsContainer)
     }
 
     private func suggestionRow(_ suggestion: SearchSuggestion, index: Int) -> some View {
@@ -183,6 +188,7 @@ struct SearchView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(AccessibilityID.Search.suggestion(index: index))
     }
 
     private var filterChips: some View {
@@ -328,64 +334,76 @@ struct SearchView: View {
     }
 
     private func resultRow(_ item: SearchResultItem) -> some View {
-        Button {
-            self.handleItemTap(item)
-        } label: {
-            HStack(spacing: 12) {
-                // Thumbnail
-                CachedAsyncImage(url: item.thumbnailURL?.highQualityThumbnailURL) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                } placeholder: {
-                    Rectangle()
-                        .fill(.quaternary)
-                        .overlay {
-                            Image(systemName: self.iconForItem(item))
-                                .foregroundStyle(.secondary)
-                        }
-                }
-                .frame(width: 48, height: 48)
-                .clipShape(.rect(cornerRadius: item.isArtist ? 24 : 6))
+        HoverObservingRow { isHovered in
+            Button {
+                self.handleItemTap(item)
+            } label: {
+                HStack(spacing: 12) {
+                    // Thumbnail
+                    CachedAsyncImage(url: item.thumbnailURL?.highQualityThumbnailURL) { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    } placeholder: {
+                        Rectangle()
+                            .fill(.quaternary)
+                            .overlay {
+                                Image(systemName: self.iconForItem(item))
+                                    .foregroundStyle(.secondary)
+                            }
+                    }
+                    .frame(width: 48, height: 48)
+                    .clipShape(.rect(cornerRadius: item.isArtist ? 24 : 6))
 
-                // Info
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(item.title)
-                        .font(.system(size: 14))
-                        .lineLimit(1)
-
-                    HStack(spacing: 4) {
-                        Text(item.resultType)
-                            .font(.system(size: 11))
-                            .foregroundStyle(.secondary)
-
-                        if let subtitle = item.subtitle {
-                            Text("•")
-                                .font(.system(size: 11))
-                                .foregroundStyle(.tertiary)
-
-                            Text(subtitle)
-                                .font(.system(size: 11))
-                                .foregroundStyle(.secondary)
+                    // Info
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack(spacing: 6) {
+                            Text(item.title)
+                                .font(.system(size: 14))
                                 .lineLimit(1)
+                            if case let .song(song) = item, song.isExplicit == true {
+                                ExplicitBadge()
+                            }
+                        }
+
+                        HStack(spacing: 4) {
+                            Text(item.resultType)
+                                .font(.system(size: 11))
+                                .foregroundStyle(.secondary)
+
+                            if let subtitle = item.subtitle {
+                                Text("•")
+                                    .font(.system(size: 11))
+                                    .foregroundStyle(.tertiary)
+
+                                Text(subtitle)
+                                    .font(.system(size: 11))
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(1)
+                            }
                         }
                     }
-                }
 
-                Spacer()
+                    Spacer()
 
-                // Play indicator for songs
-                if item.videoId != nil {
-                    Image(systemName: "play.circle")
-                        .font(.title2)
-                        .foregroundStyle(.secondary)
+                    // Favorite toggle for songs
+                    if case let .song(song) = item {
+                        LikeButton(song: song, isRowHovered: isHovered)
+                    }
+
+                    // Play indicator for songs
+                    if item.videoId != nil {
+                        Image(systemName: "play.circle")
+                            .font(.title2)
+                            .foregroundStyle(.secondary)
+                    }
                 }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 8)
+                .contentShape(Rectangle())
             }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 8)
-            .contentShape(Rectangle())
+            .buttonStyle(.interactiveRow(cornerRadius: 6))
         }
-        .buttonStyle(.interactiveRow(cornerRadius: 6))
         .contextMenu {
             self.contextMenuItems(for: item)
         }
@@ -445,6 +463,10 @@ struct SearchView: View {
 
         Divider()
 
+        AddToPlaylistContextMenu(song: song, client: self.viewModel.client)
+
+        Divider()
+
         // Go to Artist - show first artist with valid ID
         if let artist = song.artists.first(where: { $0.hasNavigableId }) {
             NavigationLink(value: artist) {
@@ -460,7 +482,7 @@ struct SearchView: View {
                 description: nil,
                 thumbnailURL: album.thumbnailURL ?? song.thumbnailURL,
                 trackCount: album.trackCount,
-                author: album.artistsDisplay
+                author: Artist.inline(name: album.artistsDisplay, namespace: "album-artist")
             )
             NavigationLink(value: playlist) {
                 Label("Go to Album", systemImage: "square.stack")
@@ -477,7 +499,7 @@ struct SearchView: View {
                 description: nil,
                 thumbnailURL: album.thumbnailURL,
                 trackCount: album.trackCount,
-                author: album.artistsDisplay
+                author: Artist.inline(name: album.artistsDisplay, namespace: "album-artist")
             )
             self.navigationPath.append(playlist)
         } label: {
@@ -617,7 +639,7 @@ struct SearchView: View {
                 description: nil,
                 thumbnailURL: album.thumbnailURL,
                 trackCount: album.trackCount,
-                author: album.artistsDisplay
+                author: Artist.inline(name: album.artistsDisplay, namespace: "album-artist")
             )
             self.navigationPath.append(playlist)
         case let .playlist(playlist):

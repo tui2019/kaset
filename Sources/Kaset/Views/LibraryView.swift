@@ -92,6 +92,14 @@ struct LibraryView: View {
                     )
                 )
             }
+            .navigationDestination(for: TopSongsDestination.self) { destination in
+                TopSongsView(
+                    viewModel: TopSongsViewModel(
+                        destination: destination,
+                        client: self.viewModel.client
+                    )
+                )
+            }
             .navigationDestination(for: PodcastShow.self) { show in
                 PodcastShowView(show: show, client: self.viewModel.client)
             }
@@ -287,6 +295,19 @@ struct LibraryView: View {
             }
         }
         .buttonStyle(.plain)
+        .contextMenu {
+            if playlist.canDelete {
+                Button(role: .destructive) {
+                    SongActionsHelper.confirmDeletePlaylist(
+                        playlist,
+                        client: self.viewModel.client,
+                        libraryViewModel: self.viewModel
+                    )
+                } label: {
+                    Label(String(localized: "Delete Playlist…"), systemImage: "trash")
+                }
+            }
+        }
     }
 
     private func podcastCard(_ show: PodcastShow) -> some View {

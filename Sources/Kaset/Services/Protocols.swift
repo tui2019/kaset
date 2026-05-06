@@ -175,12 +175,8 @@ protocol YTMusicClientProtocol: Sendable {
     /// This returns all tracks in a single request, which is more reliable for radio playlists.
     func getPlaylistAllTracks(playlistId: String) async throws -> [Song]
 
-    /// Fetches the next batch of playlist tracks via continuation.
-    /// Returns nil if no more tracks are available.
-    func getPlaylistContinuation() async throws -> PlaylistContinuationResponse?
-
-    /// Whether more playlist tracks are available to load.
-    var hasMorePlaylistTracks: Bool { get }
+    /// Fetches a batch of playlist tracks using the provided continuation token.
+    func getPlaylistContinuation(token: String) async throws -> PlaylistContinuationResponse
 
     /// Fetches artist details including their songs and albums.
     func getArtist(id: String) async throws -> ArtistDetail
@@ -207,6 +203,23 @@ protocol YTMusicClientProtocol: Sendable {
 
     /// Adds a playlist to the user's library.
     func subscribeToPlaylist(playlistId: String) async throws
+
+    /// Permanently deletes one of the user's own playlists.
+    func deletePlaylist(playlistId: String) async throws
+
+    /// Fetches the user's playlists that can receive the provided song.
+    func getAddToPlaylistOptions(videoId: String) async throws -> AddToPlaylistMenu
+
+    /// Adds a song to an existing playlist.
+    func addSongToPlaylist(videoId: String, playlistId: String, allowDuplicate: Bool) async throws
+
+    /// Creates a playlist and optionally seeds it with songs.
+    func createPlaylist(
+        title: String,
+        description: String?,
+        privacyStatus: PlaylistPrivacyStatus,
+        videoIds: [String]
+    ) async throws -> String
 
     /// Removes a playlist from the user's library.
     func unsubscribeFromPlaylist(playlistId: String) async throws
@@ -411,7 +424,7 @@ protocol PlayerServiceProtocol: AnyObject, Sendable {
 
     // MARK: - State Updates
 
-    /// Called when the mini player confirms playback has started.
+    /// Records that the WebView observer has confirmed playback has started.
     func confirmPlaybackStarted()
 
     /// Called when the mini player is dismissed.
