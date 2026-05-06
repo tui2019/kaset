@@ -175,25 +175,59 @@ struct PlayerBar: View {
         self.isHoveringSeekBar && self.playerService.currentTrack != nil
     }
 
-    private var seekInteractionLayer: some View {
-        Group {
-            if self.showsSeekControls {
-                if self.playerService.isCurrentItemLive {
-                    self.liveIndicatorView
-                        .transition(.opacity)
-                } else {
-                    self.seekBarView
-                        .transition(.opacity)
-                }
-            } else if !self.playerService.isCurrentItemLive {
+    private var usesLegacyHoverBehavior: Bool {
+        if #available(macOS 26.0, *) {
+            false
+        } else {
+            true
+        }
+    }
+
+    @ViewBuilder
+    private var legacySeekInteractionContent: some View {
+        if self.playerService.isCurrentItemLive {
+            self.liveIndicatorView
+                .opacity(self.showsSeekControls ? 1 : 0)
+        } else {
+            ZStack {
                 self.compactProgressView
+                    .opacity(self.showsSeekControls ? 0 : 1)
+                self.seekBarView
+                    .opacity(self.showsSeekControls ? 1 : 0)
             }
         }
-        .frame(height: self.showsSeekControls ? 28 : 10, alignment: .bottom)
+    }
+
+    private var seekInteractionLayer: some View {
+        Group {
+            if self.usesLegacyHoverBehavior {
+                self.legacySeekInteractionContent
+                    .animation(.easeInOut(duration: 0.12), value: self.showsSeekControls)
+            } else {
+                if self.showsSeekControls {
+                    if self.playerService.isCurrentItemLive {
+                        self.liveIndicatorView
+                            .transition(.opacity)
+                    } else {
+                        self.seekBarView
+                            .transition(.opacity)
+                    }
+                } else {
+                    if !self.playerService.isCurrentItemLive {
+                        self.compactProgressView
+                    }
+                }
+            }
+        }
+        .frame(height: self.usesLegacyHoverBehavior ? 28 : (self.showsSeekControls ? 28 : 10), alignment: .bottom)
         .contentShape(Rectangle())
         .onHover { hovering in
-            withAnimation(.easeInOut(duration: 0.15)) {
+            if self.usesLegacyHoverBehavior {
                 self.isHoveringSeekBar = hovering
+            } else {
+                withAnimation(.easeInOut(duration: 0.15)) {
+                    self.isHoveringSeekBar = hovering
+                }
             }
         }
     }
