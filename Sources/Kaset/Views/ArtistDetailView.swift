@@ -32,7 +32,6 @@ struct ArtistDetailView: View { // swiftlint:disable:this type_body_length
         .accentBackground(from: self.viewModel.artistDetail?.thumbnailURL?.highQualityThumbnailURL)
         .navigationTitle(self.artist.name)
         .toolbarBackgroundHidden()
-        .topFade()
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if case .error = self.viewModel.loadingState {} else {
                 PlayerBar()
@@ -112,6 +111,7 @@ struct ArtistDetailView: View { // swiftlint:disable:this type_body_length
             }
             .padding(24)
         }
+        .topFade(style: .contentMask)
     }
 
     private func headerView(_ detail: ArtistDetail) -> some View {
@@ -256,6 +256,7 @@ struct ArtistDetailView: View { // swiftlint:disable:this type_body_length
                         .frame(width: 16, height: 16)
                 } else {
                     Text(self.subscribeButtonText(detail))
+                        .foregroundStyle(.white)
                 }
             }
             .buttonStyle(.borderedProminent)
