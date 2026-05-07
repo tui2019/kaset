@@ -105,14 +105,19 @@ struct MainWindow: View {
                 DiagnosticsLogger.app.info("MainWindow: Login check complete")
             }
 
-            // Persistent WebView - always present once a video has been requested.
-            // Uses a SINGLETON WebView instance that persists for the app lifetime.
-            // Keep it as a hidden 1×1 anchor for audio playback; do not reveal a mini overlay.
-            if let videoId = playerService.pendingPlayVideoId {
-                PersistentPlayerView(videoId: videoId, isExpanded: false)
-                    .frame(width: 1, height: 1)
-                    .opacity(0)
-                    .allowsHitTesting(false)
+            // Persistent WebView - keep a single live YT Music session.
+            // In the macOS 14 port we keep it visible for playback debugging.
+            if self.authService.state.isLoggedIn {
+                PersistentPlayerView(videoId: playerService.pendingPlayVideoId, isExpanded: true)
+                    .frame(width: 420, height: 236)
+                    .background(.black)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(.white.opacity(0.15), lineWidth: 1)
+                    )
+                    .padding(.trailing, 12)
+                    .padding(.bottom, 72)
                     .transaction { transaction in
                         transaction.animation = nil
                     }
