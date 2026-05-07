@@ -107,8 +107,8 @@ struct MainWindow: View {
 
             // Persistent WebView - keep a single live YT Music session.
             // In the macOS 14 port we keep it visible for playback debugging.
-            if self.authService.state.isLoggedIn {
-                PersistentPlayerView(videoId: playerService.pendingPlayVideoId, isExpanded: true)
+            if self.authService.state.isLoggedIn, let videoId = playerService.pendingPlayVideoId {
+                PersistentPlayerView(videoId: videoId, isExpanded: true)
                     .frame(width: 420, height: 236)
                     .background(.black)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
